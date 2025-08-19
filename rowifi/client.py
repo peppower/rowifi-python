@@ -104,6 +104,8 @@ class RoWifiClient:
                 if attempt == self.max_retries:
                     raise RoWifiError(f"Request failed: {str(e)}")
                 time.sleep(2 ** attempt)  # Exponential backoff
+            except Exception as e:
+                raise AuthenticationError(f"Error at endpoint {endpoint} with payload {json_data}: {e}")
     
     def close(self):
         """Close the HTTP session"""
@@ -116,48 +118,3 @@ class RoWifiClient:
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit"""
         self.close()
-
-# =============================================================================
-# Example usage script
-# =============================================================================
-
-"""
-Example usage of the RoWifi Python API client
-
-# Basic usage
-from rowifi import RoWifiClient, DenylistKind, DenylistCreate
-
-# Initialize client
-client = RoWifiClient(token="your_bot_token_here")
-
-# Get member information
-try:
-    member = client.members.get_member("123456789", "987654321")
-    print(f"User {member.discord_id} is linked to Roblox user {member.roblox_id}")
-except NotFoundError:
-    print("Member not found or not linked")
-
-# Manage XP
-user_xp = client.tower.get_user_xp("123456789", 12345)
-print(f"User has {user_xp.xp} XP")
-
-# Add XP (this might promote the user based on XP binds)
-updated_xp = client.tower.add_user_xp("123456789", 12345, 100)
-print(f"User now has {updated_xp.xp} XP")
-
-# Create a user denylist
-denylist = DenylistCreate(
-    reason="Inappropriate behavior",
-    kind=DenylistKind.USER,
-    user_id=12345
-)
-client.denylists.create_denylist("123456789", denylist)
-
-# Set user rank
-client.ranks.set_user_rank("123456789", 12345, 67890, 50)
-
-# Context manager usage (recommended)
-with RoWifiClient("your_bot_token") as client:
-    member = client.members.get_member("guild_id", "user_id")
-    print(f"Linked to Roblox user: {member.roblox_id}")
-"""

@@ -6,8 +6,8 @@ from .tower import TowerEndpoints
 from .ranks import RankEndpoints
 
 __all__ = [
-    'MemberEndpoints',
-    'DenylistEndpoints', 
-    'TowerEndpoints',
-    'RankEndpoints'
+    "MemberEndpoints",
+    "DenylistEndpoints",
+    "TowerEndpoints",
+    "RankEndpoints",
 ]
